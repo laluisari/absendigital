@@ -6,7 +6,7 @@
     <ul class="navbar-nav ml-auto ml-md-0">
         <div class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <img src="<?= ($user['image'] == 'default.png' ? base_url('assets/img/default-profile.png') : base_url('storage/profile/' . $user['image'])); ?>" alt="Profile Image" width="35" class="rounded mr-2" />
+                <img src="<?= base_url('public/uploads/profile/' . $user['image'] ); ?>" alt="Profile Image" width="35" class="rounded-circle mr-2" height="35"/>
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                 <h6 class="dropdown-header">

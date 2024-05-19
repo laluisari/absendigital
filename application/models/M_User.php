@@ -71,7 +71,7 @@ class M_User extends CI_Model
                     $this->db->set('image', $new_image);
                 } else {
                     return "default.png";
-                }
+                } 
             }
             $this->db->set($sendsave);
             $this->db->where('username', htmlspecialchars($this->input->post('username_pegawai', true))); // mengambil data dari session

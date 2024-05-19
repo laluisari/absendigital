@@ -7,8 +7,7 @@
                     <div class="float-right">
                         <?php if (empty($dataapp['status_setting'])) : ?>
                             <button id="initsettingapp" class="btn btn-primary"><span class="fas fa-wrench mr-1"></span>Initialize Setting App</button>
-                        <?php elseif (!empty($dataapp['status_setting'])) : ?>
-                            <button class="btn btn-success" disabled><span class="fas fa-wrench mr-1"></span>Telah Di Initialisasi</button>
+
                         <?php endif; ?>
                         <?php if (empty($dataapp['status_setting'])) : ?>
                             <button class="btn btn-danger" disabled><span class="fas fa-undo-alt mr-1"></span>Reset Setting App</button>
@@ -89,7 +88,7 @@
                             <div class="col-sm-10">
                                 <div class="row">
                                     <div class="col-sm-3">
-                                        <img src="<?= (empty($dataapp['logo_instansi'])) ? base_url('assets/img/clock-image.png') : (($dataapp['logo_instansi'] == 'default-logo.png') ? base_url('assets/img/clock-image.png') : base_url('storage/setting/' . $dataapp['logo_instansi'])); ?>" class="img-thumbnail">
+                                        <img src="<?= base_url('public/uploads/logo_instansi/' . $dataapp['logo_instansi']); ?>" class="img-thumbnail">
                                     </div>
                                     <div class="col-sm-9">
                                         <div class="custom-file">

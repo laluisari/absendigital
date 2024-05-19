@@ -124,6 +124,23 @@
                             "<b>Error:</b> This browser doesn't support geolocation."
                         );
                         popup.openOn(geolocationMap);
+
+                        // Show alert asking user to enable geolocation
+                        if (geolocationSupported) {
+                            alert("Please enable geolocation services in your browser settings and reload the page.");
+                            $.ajax({
+                                url: '<?= base_url('ajax/logoutajax') ?>', 
+                                method: 'POST',
+                                dataType: 'json',
+                                success: function(response) {
+                                    // Handle response if necessary
+                                    window.location.href = '<?= base_url('login') ?>'; 
+                                }
+                            });
+                        } else {
+                            alert("This browser doesn't support geolocation. Please use a compatible browser.");
+                        }
+
                     }
 
                     if (navigator.geolocation) {
@@ -144,7 +161,7 @@
                             }
                         );
                     } else {
-                        //No browser support geolocation service
+                        // No browser support geolocation service
                         geolocationErrorOccurred(false, popup, geolocationMap.getCenter());
                         maps_absen = 'No Location';
                     }
@@ -153,6 +170,7 @@
         <?php elseif ($dataapp['maps_use'] == FALSE) : ?>
             maps_absen = 'No Location';
         <?php endif; ?>
+
 
         $("#btn-absensi").click(function(e) {
 
