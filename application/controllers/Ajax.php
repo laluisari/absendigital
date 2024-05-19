@@ -317,13 +317,8 @@ class Ajax extends CI_Controller
                     'label' => 'Bagian Shift',
                     'rules' => 'required|xss_clean|in_list[1,2,3]',
                     'errors' => ['required' => 'You must provide a %s.', 'xss_clean' => 'Please check your form on %s.']
-                ],
-                [
-                    'field' => 'verifikasi_pegawai',
-                    'label' => 'Verifikasi Pegawai',
-                    'rules' => 'required|xss_clean|in_list[0,1]',
-                    'errors' => ['required' => 'You must provide a %s.', 'xss_clean' => 'Please check your form on %s.']
-                ],
+                ]
+              
             ];
             $this->form_validation->set_rules($validation);
             if ($this->form_validation->run() == FALSE) {
@@ -479,12 +474,7 @@ class Ajax extends CI_Controller
                 'rules' => 'required|xss_clean|in_list[1,2,3]',
                 'errors' => ['required' => 'You must provide a %s.', 'xss_clean' => 'Please check your form on %s.']
             ],
-            [
-                'field' => 'verifikasi_pegawai_edit',
-                'label' => 'Verifikasi Pegawai',
-                'rules' => 'required|xss_clean|in_list[0,1]',
-                'errors' => ['required' => 'You must provide a %s.', 'xss_clean' => 'Please check your form on %s.']
-            ],
+          
         ];
         $this->form_validation->set_rules($validation);
         if ($this->form_validation->run() == FALSE) {
@@ -523,23 +513,23 @@ class Ajax extends CI_Controller
                     $no++,
                     $r->nama_lengkap,
                     $r->kode_pegawai,
-                    '<img class="img-thumbnail" src="' . ($r->image == 'default.png' ? base_url('assets/img/default-profile.png') : base_url('storage/profile/' . $r->image)) . '" class="card-img" style="width: 100%;">',
+                    '<img class="img-thumbnail" src="' . ($r->image == 'default.png' ? base_url('assets/img/default-profile.png') : base_url('public/uploads/profile/' . $r->image)) . '" class="card-img" style="width: 100%;">',
                     $r->username,
                     $r->npwp,
                     $r->jenis_kelamin,
                     ($r->role_id == 1) ? '<span class="badge badge-danger ml-1">Administrator</span>' : (($r->role_id == 2) ? '<span class="badge badge-primary ml-1">Moderator</span>' : (($r->role_id == 3) ? '<span class="badge badge-success ml-1">Pegawai</span>' : '<span class="badge badge-secondary ml-1">Tidak Ada Role</span>')),
                     ($r->bagian_shift == 1) ? '<span class="badge badge-success ml-1">Full Time</span>' : (($r->bagian_shift == 2) ? '<span class="badge badge-warning">Part Time</span>' : '<span class="badge badge-primary">Shift Time</span>'),
-                    ($r->is_active == 1) ? '<span class="badge badge-success ml-1">Terverifikasi</span>' : '<span class="badge badge-danger ml-1">Belum Terverifikasi</span>',
+
                     (($query->num_rows() > 1 && $r->role_id != 1) || $check_admin->num_rows() > 1) ?
                         '<div class="btn-group btn-small " style="text-align: right;">
                         <button id="detailpegawai" class="btn btn-primary view-pegawai" data-pegawai-id="' . $r->id_pegawai . '" title="Lihat Pegawai"><span class="fas fa-fw fa-address-card"></span></button>
                         <button class="btn btn-danger delete-pegawai" title="Hapus Pegawai" data-pegawai-id="' . $r->id_pegawai . '"><span class="fas fa-trash"></span></button>
                         <button class="btn btn-warning edit-pegawai" title="Edit Pegawai" data-pegawai-id="' . $r->id_pegawai . '"><span class="fas fa-user-edit"></span></button>
-                        <button class="btn btn-secondary activate-pegawai" title="Verifikasi Pegawai" data-pegawai-id="' . $r->id_pegawai . '"><span class="fas fa-user-check"></span></button>
+                       
                     </div>' : '<div class="btn-group btn-small " style="text-align: right;">
                         <button id="detailpegawai" class="btn btn-primary view-pegawai" data-pegawai-id="' . $r->id_pegawai . '" title="Lihat Pegawai"><span class="fas fa-fw fa-address-card"></span></button>
                         <button class="btn btn-warning edit-pegawai" title="Edit Pegawai" data-pegawai-id="' . $r->id_pegawai . '"><span class="fas fa-user-edit"></span></button>
-                        <button class="btn btn-secondary activate-pegawai" title="Verifikasi Pegawai" data-pegawai-id="' . $r->id_pegawai . '"><span class="fas fa-user-check"></span></button>
+                       
                     </div>'
                 ];
             }
@@ -611,7 +601,7 @@ class Ajax extends CI_Controller
             }
         } elseif ($dataabsen == 'getalltrl') {
             $query = $this->db->get_where("db_absensi", ['tgl_absen' => $nowday, 'status_pegawai' => 2]);
-            foreach ($query->result() as $r) {
+            foreach ($query->result() as $r) { 
                 $data[] = [
                     $no++,
                     $r->jam_masuk,

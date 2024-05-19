@@ -64,36 +64,32 @@ class M_Settings extends CI_Model
 
         $upload_image = $_FILES['logo_instansi']['name'];
 
+        // $upload_image = $_FILES['foto_pegawai']['name'];
+     
         if ($upload_image) {
             $config['allowed_types'] = 'gif|jpg|png|jpeg|bmp';
             $config['max_size']      = '2048';
             $config['encrypt_name'] = TRUE;
-            $config['upload_path'] = '../public/storage/setting/';
+            $config['upload_path'] = 'public/uploads/logo_instansi/';
 
             $this->load->library('upload', $config);
 
             if ($this->upload->do_upload('logo_instansi')) {
                 $gbr = $this->upload->data();
-                $config['image_library'] = 'gd2';
-                $config['source_image'] = '../public/storage/setting/' . $gbr['file_name'];
-                $config['create_thumb'] = FALSE;
-                $config['maintain_ratio'] = FALSE;
-                $config['width'] = 300;
-                $config['height'] = 300;
-                $config['new_image'] = '../public/storage/setting/' . $gbr['file_name'];
-                $this->load->library('image_lib', $config);
-                $this->image_lib->resize();
+                $new_image = $gbr['file_name'];
+            
+                $image_path = 'uploads/logo_instansi/' . $new_image;
 
-                $old_image = $this->appsetting['logo_instansi'];
-                if ($old_image != 'default-logo.png') {
-                    unlink(FCPATH . 'storage/setting/' . $old_image);
-                }
-                $new_image = $this->upload->data('file_name');
+    
                 $this->db->set('logo_instansi', $new_image);
             } else {
-                return "default-logo.png";
+                // Handle upload error
+                $this->db->set('logo_instansi', 'uploads/logo_instansi/default.png');
             }
+        } else {
+            $this->db->set('logo_instansi', 'uploads/logo_instansi/default.png');
         }
+
         $this->db->set($sendsave);
         $this->db->where('status_setting', 1);
         $this->db->update('db_setting', $sendsave);

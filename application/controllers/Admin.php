@@ -52,14 +52,14 @@ class Admin extends CI_Controller
     {
         is_admin();
         $data = [
-            'title' => 'Data Pegawai',
+            'title' => 'Data Pegawai', 
             'user' => $this->get_datasess,
             'dataapp' => $this->get_datasetupapp,
             'fetchdbpegawai' => $this->M_Admin->fetchlistpegawai()
         ];
         $this->load->view('layout/header', $data);
         $this->load->view('layout/navbar', $data);
-        $this->load->view('layout/sidebar', $data);
+        $this->load->view('layout/sidebar', $data); 
         $this->load->view('admin/datapegawai', $data);
         $this->load->view('layout/footer', $data);
     }

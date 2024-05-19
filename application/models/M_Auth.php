@@ -1,6 +1,6 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
- 
+
 class M_Auth extends CI_Model
 {
     public function check_rememberme()
@@ -30,38 +30,43 @@ class M_Auth extends CI_Model
 
     public function do_login()
     {
+        // Ambil input username dan password dari form
         $username = $this->input->post('username');
         $password = $this->input->post('password');
+
+        // Lakukan query ke database untuk mendapatkan data user berdasarkan username
         $user = $this->db->get_where('user', ['username' => $username])->row_array();
+
+        // Memeriksa apakah user ditemukan
         if ($user) {
-            //jika user aktif
-            if ($user['is_active'] == 1) {
-                //check password
-                if (password_verify($password, $user['password'])) {
-                    $membuat_session = [
-                        'username' => $user['username'],
-                        'role_id' => $user['role_id'],
-                        'logged_in' => true
-                    ];
-                    $this->db->where('user.id_pegawai', $user['id_pegawai']);
-                    $this->session->set_userdata($membuat_session); //Memasukan / menyimpan data ke session
-                    if (!empty($this->input->post('rememberme'))) {
-                        $hash_rememberme = base64_encode(random_bytes(32));
-                        $exp_rememberme = '31570560';
-                        set_cookie('absensi_rememberme', hash('SHA256', $hash_rememberme), $exp_rememberme);
-                        $this->_db_session($hash_rememberme, $user, $exp_rememberme);
-                    }
-                    redirect(base_url());
-                } else {
-                    $this->session->set_flashdata('authmsg', '<div class="alert alert-danger" role="alert">Password Atau Username Salah!</div>');
-                    redirect('login');
+            //check password
+            if (password_verify($password, $user['password'])) {
+                // Jika password benar, buat data session untuk user
+                $membuat_session = [
+                    'username' => $user['username'],
+                    'role_id' => $user['role_id'],
+                    'logged_in' => true
+                ];
+                $this->session->set_userdata($membuat_session); // Simpan data session
+
+                // Memeriksa apakah opsi "remember me" diaktifkan
+                if (!empty($this->input->post('rememberme'))) {
+                    $hash_rememberme = base64_encode(random_bytes(32));
+                    $exp_rememberme = 60 * 60 * 24 * 365; // 1 tahun dalam detik
+                    set_cookie('absensi_rememberme', hash('SHA256', $hash_rememberme), $exp_rememberme);
+                    $this->_db_session($hash_rememberme, $user, $exp_rememberme);
                 }
+
+                // Redirect ke halaman utama setelah login berhasil
+                redirect(base_url());
             } else {
-                $this->session->set_flashdata('authmsg', '<div class="alert alert-danger" role="alert">Akun Ini Belum Aktif, Silakan Hubungi Pihak Administrator!</div>');
+                // Password salah, kirim pesan error
+                $this->session->set_flashdata('authmsg', '<div class="alert alert-danger" role="alert">Password atau Username salah!</div>');
                 redirect('login');
             }
         } else {
-            $this->session->set_flashdata('authmsg', '<div class="alert alert-danger" role="alert">Akun Belum Terdaftar!</div>');
+            // User tidak ditemukan, kirim pesan error
+            $this->session->set_flashdata('authmsg', '<div class="alert alert-danger" role="alert">Akun belum terdaftar!</div>');
             redirect('login');
         }
     }
@@ -88,6 +93,7 @@ class M_Auth extends CI_Model
         ];
         $this->db->insert('db_rememberme', $save_sessdb);
     }
+
 
     public function do_logout()
     {

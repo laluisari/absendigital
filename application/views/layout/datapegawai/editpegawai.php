@@ -26,7 +26,7 @@
 <div class="form-group row">
     <label for="kode_pegawai_edit" class="col-sm-4 col-form-label">Kode Pegawai</label>
     <div class="col-sm-8">
-        <input type="text" class="form-control" id="kode_pegawai_edit" name="kode_pegawai_edit" value="<?= $datapegawai['kode_pegawai'] ?>" title="Kode telah otomatis digenerate secara acak pada saat penambahan pegawai" readonly>
+        <input type="text" class="form-control" id="kode_pegawai_edit" name="kode_pegawai_edit" value="<?= $datapegawai['kode_pegawai'] ?>" >
     </div>
 </div>
 <div class="form-group row">
@@ -111,31 +111,13 @@
         </div>
     </div>
 </div>
-<div class="form-group row">
-    <label for="verifikasi_pegawai_edit" class="col-sm-4 col-form-label">Verifikasi Pegawai</label>
-    <div class="col-sm-8">
-        <div class="form-check form-check-inline">
-            <?= form_radio('verifikasi_pegawai_edit', 0, set_value('verifikasi_pegawai_edit[]', ($datapegawai['is_active'] == 0) ? true : false), 'id="verifikasi_pegawai_edit" class="form-check-input"'); ?>
-            <label class="form-check-label" for="verifikasi_pegawai_edit1">Belum Terverifikasi</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <?= form_radio('verifikasi_pegawai_edit', 1, set_value('verifikasi_pegawai_edit[]', ($datapegawai['is_active'] == 1) ? true : false), 'class="form-check-input"'); ?>
-            <label class="form-check-label" for="verifikasi_pegawai_edit2">Terverifikasi</label>
-        </div>
-    </div>
-</div>
-<div class="form-group row">
-    <label for="barcode_pegawai" class="col-sm-4 col-form-label">Buat Barcode Pegawai</label>
-    <div class="col-sm-8">
-        <div class="custom-control custom-checkbox"><?= form_checkbox('barcode_pegawai_edit', 1, ($datapegawai['qr_code_use'] == 1) ? true : false, 'id="barcode_pegawai_edit" class="custom-control-input"'); ?><label class="custom-control-label" for="barcode_pegawai_edit">Dengan Barcode</label></div>
-    </div>
-</div>
+
 <div class="form-group row">
     <div class="col-sm-2">Pas Foto Pegawai</div>
     <div class="col-sm-10">
         <div class="row">
             <div class="col-sm-3">
-                <img src="<?= $foto_source = (empty($datapegawai['image'])) ? base_url('assets/img/default-profile.png') : (($datapegawai['image'] == 'default.png') ? base_url('assets/img/default-profile.png') : base_url('storage/profile/' . $datapegawai['image'])); ?>" class="img-thumbnail">
+                <img src="<?= $datapegawai['image'] == 'default.png' ? base_url('assets/img/default-profile.png') : base_url('public/uploads/profile/' . $datapegawai['image']); ?>" class="img-thumbnail">
             </div>
             <div class="col-sm-9">
                 <div class="custom-file">

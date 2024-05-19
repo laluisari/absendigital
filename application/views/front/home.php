@@ -2,7 +2,7 @@
     <div class="mt-4 jumbotron jumbotron-fluid shadow-lg">
         <div class="container">
             <div class="text-center">
-                <img src="<?= (empty($dataapp['logo_instansi'])) ? base_url('assets/img/clock-image.png') : (($dataapp['logo_instansi'] == 'default-logo.png') ? base_url('assets/img/clock-image.png') : base_url('storage/setting/' . $dataapp['logo_instansi'])); ?>" class="card-img" style="width:15%;">
+                <img src="<?= base_url('public/uploads/logo_instansi/' . $dataapp['logo_instansi']); ?>" class="card-img" style="width:15%;">
                 <h1 class="display-5">
                     <?= (empty($dataapp['nama_instansi'])) ? '[Nama Instansi Belum Disetting]' : $dataapp['nama_instansi']; ?>
                 </h1>
@@ -20,14 +20,12 @@
             <div class="card mb-4">
                 <div class="card-header text-center">
                     <span class="fas fa-user mr-1"></span>Identitas Diri
-                    <div class="float-right">
-                        <button id="qrcode-pegawai" class="btn btn-primary" data-toggle="modal" data-target="#qrcodemodal"><span class="fas fa-qrcode mr-1"></span>QR CODE</button>
-                    </div>
+                    
                 </div>
                 <div class="card-body">
                     <div class="row detail">
                         <div class="col-md-2 col-sm-4 col-6 p-2">
-                            <img class="img-thumbnail" src="<?= ($user['image'] == 'default.png' ? base_url('assets/img/default-profile.png') : base_url('storage/profile/' . $user['image'])); ?>" class="card-img" style="width:100%;">
+                            <img class="img-thumbnail" src="<?= base_url('public/uploads/profile/' . $user['image']); ?>" class="card-img" style="width:100%;">
                         </div>
                         <div class="col-md-10 col-sm-8 col-6">
                             <dl class="row">
@@ -58,7 +56,7 @@
                         <div class="text-muted">Akun Dibuat: <?= date('d F Y', $user['date_created']); ?></div>
                     </div>
                 </div>
-            </div>
+            </div> 
         </div>
         <div class="col-xl-5">
             <div class="card mb-4">
@@ -74,6 +72,7 @@
                         <h3 id="clocknow"></h3>
                         <h3 id="datenow"></h3>
                     </div>
+
                     <?= form_dropdown('ket_absen', ['Bekerja Di Kantor' => 'Bekerja Di Kantor', 'Bekerja Di Rumah / WFH' => 'Bekerja Di Rumah / WFH', 'Sakit' => 'Sakit', 'Cuti' => 'Cuti'], '', ['class' => 'form-control align-content-center my-2', 'id' => 'ket_absen']); ?>
                     <div class="mt-2">
                         <div id="func-absensi">

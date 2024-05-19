@@ -1,15 +1,17 @@
+
 <div class="container-fluid">
     <h1 class="my-4"><span class="fas fa-user-tie mr-2"></span>Data Pegawai</h1>
     <div class="card mb-4">
         <div class="card-header">
             <div class="float-right">
-                <div class="btn btn-primary" id="refresh-tabel-pegawai"><span class="fas fa-sync-alt mr-1"></span>Refresh Tabel</div>
+                <!-- <div class="btn btn-primary" id="refresh-tabel-pegawai"><span class="fas fa-sync-alt mr-1"></span>Refresh Tabel</div> -->
                 <button class="btn btn-success" data-toggle="modal" data-target="#addpegawaimodal" id="pgwadduser"><span class="fas fa-user-plus mr-1"></span>Tambah Pegawai</button>
             </div>
         </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered" id="datapegawai" width="100%" cellspacing="0">
+
                     <thead>
                         <tr>
                             <th>No</th>
@@ -21,25 +23,10 @@
                             <th>Jenis Kelamin</th>
                             <th>Level</th>
                             <th>Shift Bagian</th>
-                            <th>Verifikasi</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
-                    <tfoot>
-                        <tr>
-                            <th>No</th>
-                            <th>Nama Pegawai</th>
-                            <th>Kode Pegawai</th>
-                            <th>Pas Foto</th>
-                            <th>Username</th>
-                            <th>NPWP</th>
-                            <th>Jenis Kelamin</th>
-                            <th>Level</th>
-                            <th>Shift Bagian</th>
-                            <th>Verifikasi</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </tfoot>
+                    
                     <tbody>
                     </tbody>
                 </table>
@@ -67,6 +54,12 @@
                     <label for="username_pegawai" class="col-sm-4 col-form-label">Username Pegawai</label>
                     <div class="col-sm-8">
                         <input type="text" class="form-control" id="username_pegawai" name="username_pegawai">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="kode_pegawai" class="col-sm-4 col-form-label">Kode Pegawai</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="kode_pegawai" name="kode_pegawai">
                     </div>
                 </div>
                 <div class="form-group row">
@@ -162,25 +155,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-group row">
-                    <label for="verifikasi_pegawai" class="col-sm-4 col-form-label">Verifikasi Pegawai</label>
-                    <div class="col-sm-8">
-                        <div class="form-check form-check-inline">
-                            <?= form_radio('verifikasi_pegawai', 0, set_radio('verifikasi_pegawai[]', 0), "id='verifikasi_pegawai' class='form-check-input'"); ?>
-                            <label class="form-check-label" for="verifikasi_pegawai1">Belum Terverifikasi</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <?= form_radio('verifikasi_pegawai', 1, set_radio('verifikasi_pegawai[]', 1), "class='form-check-input'"); ?>
-                            <label class="form-check-label" for="verifikasi_pegawai2">Terverifikasi</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="barcode_pegawai" class="col-sm-4 col-form-label">Buat Barcode Pegawai</label>
-                    <div class="col-sm-8">
-                        <div class="custom-control custom-checkbox"><input class="custom-control-input" id="barcode_pegawai" type="checkbox" name="barcode_pegawai" /><label class="custom-control-label" for="barcode_pegawai">Dengan Barcode</label></div>
-                    </div>
-                </div>
+      
                 <div class="form-group row">
                     <div class="col-sm-4">Pas Foto Pegawai</div>
                     <div class="col-sm-8">
