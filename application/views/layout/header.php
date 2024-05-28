@@ -19,8 +19,11 @@
         <link href="<?= base_url('assets'); ?>/vendor/bootstrap-toggle-master/css/bootstrap4-toggle.min.css" rel="stylesheet" />
         <link href="<?= base_url('assets'); ?>/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" />
         <link href="<?= base_url('assets'); ?>/vendor/leaflet/leaflet.css" rel="stylesheet" />
+        <link href="<?= base_url('assets'); ?>/vendor/leaflet/Control.Geocoder.css" rel="stylesheet" />
         <link href="<?= base_url('assets'); ?>/vendor/bootstrap-datepicker/css/bootstrap-datepicker.min.css" rel="stylesheet">
+        
         <script src="<?= base_url('assets'); ?>/vendor/leaflet/leaflet.js"></script>
+        <script src="<?= base_url('assets'); ?>/vendor/leaflet/Control.Geocoder.js"></script>
 
     </head>
 
@@ -28,7 +31,7 @@
     <?php else : ?>
         <!DOCTYPE html>
         <html lang="en">
-
+ 
         <head>
             <meta charset="utf-8" />
             <meta http-equiv="X-UA-Compatible" content="IE=edge" />
