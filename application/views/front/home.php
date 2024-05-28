@@ -20,7 +20,7 @@
             <div class="card mb-4">
                 <div class="card-header text-center">
                     <span class="fas fa-user mr-1"></span>Identitas Diri
-                    
+
                 </div>
                 <div class="card-body">
                     <div class="row detail">
@@ -56,7 +56,7 @@
                         <div class="text-muted">Akun Dibuat: <?= date('d F Y', $user['date_created']); ?></div>
                     </div>
                 </div>
-            </div> 
+            </div>
         </div>
         <div class="col-xl-5">
             <div class="card mb-4">
@@ -73,7 +73,7 @@
                         <h3 id="datenow"></h3>
                     </div>
 
-                    <?= form_dropdown('ket_absen', ['Bekerja Di Kantor' => 'Bekerja Di Kantor', 'Bekerja Di Rumah / WFH' => 'Bekerja Di Rumah / WFH', 'Sakit' => 'Sakit', 'Cuti' => 'Cuti'], '', ['class' => 'form-control align-content-center my-2', 'id' => 'ket_absen']); ?>
+                    <?= form_dropdown('ket_absen', ['Bekerja Di Kantor' => 'Bekerja Di Kantor', 'Bekerja Di Rumah / WFH' => 'Bekerja Di Rumah / WFH', 'Sakit' => 'Sakit', 'Izin' => 'Izin'], '', ['class' => 'form-control align-content-center my-2', 'id' => 'ket_absen']); ?>
                     <div class="mt-2">
                         <div id="func-absensi">
                             <p class="font-weight-bold">Status Kehadiran: <?= $statuspegawai = (empty($dbabsensi['status_pegawai'])) ? '<span class="badge badge-primary">Belum Absen</span>' : (($dbabsensi['status_pegawai'] == 1) ? '<span class="badge badge-success">Sudah Absen</span>' : '<span class="badge badge-danger">Absen Terlambat</span>'); ?></p>
@@ -82,7 +82,24 @@
                                 <p>Waktu Pulang: <?= $jammasuk = (empty($dbabsensi['jam_pulang'])) ? '00:00:00' : $dbabsensi['jam_pulang']; ?></p>
                             </div>
                         </div>
-                        <button class="btn btn-dark" id="btn-absensi">Absen</button>
+
+                        <?php
+                        $clocknow = date("H:i:s");
+                        $sudahAbsen = false; // Default value if conditions are not met
+
+                        if (isset($dbabsensi['status_pegawai'], $dataapp['absen_pulang'])) {
+                            $sudahAbsen = $dbabsensi['status_pegawai'] == 1 && strtotime($dataapp['absen_pulang']) <= strtotime($clocknow);
+                        }
+                        ?>
+
+                        <?php if ($sudahAbsen) : ?>
+                            <button class="btn btn-dark" id="btn-absensi">absen pulang</button>
+                        <?php endif; ?>
+
+                        <?php if ( empty($dbabsensi['jam_masuk'])) : ?>
+                            <button class="btn btn-dark" id="btn-absensi">absen</button>
+                        <?php endif; ?>
+
                     </div>
                 </div>
                 <div class="card-footer">

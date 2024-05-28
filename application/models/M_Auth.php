@@ -8,6 +8,7 @@ class M_Auth extends CI_Model
         $get_cookie_rmb = get_cookie('absensi_rememberme');
         $get_hash = $this->db->get_where('db_rememberme', ['cookie_hash' => $get_cookie_rmb])->row_array();
         $user = $this->db->get_where('user', ['username' => $get_hash['username']])->row_array();
+        
         //check hash cookie
         if (hash_equals($get_cookie_rmb, $get_hash['cookie_hash'])) {
             if (time() - $get_hash['expired'] > '31570560') {
@@ -33,6 +34,7 @@ class M_Auth extends CI_Model
         // Ambil input username dan password dari form
         $username = $this->input->post('username');
         $password = $this->input->post('password');
+  
 
         // Lakukan query ke database untuk mendapatkan data user berdasarkan username
         $user = $this->db->get_where('user', ['username' => $username])->row_array();

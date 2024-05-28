@@ -7,7 +7,6 @@
                     <div class="float-right">
                         <?php if (empty($dataapp['status_setting'])) : ?>
                             <button id="initsettingapp" class="btn btn-primary"><span class="fas fa-wrench mr-1"></span>Initialize Setting App</button>
-
                         <?php endif; ?>
                         <?php if (empty($dataapp['status_setting'])) : ?>
                             <button class="btn btn-danger" disabled><span class="fas fa-undo-alt mr-1"></span>Reset Setting App</button>
@@ -84,6 +83,42 @@
                             </div>
                         </div>
                         <div class="form-group row">
+                            <label for="latitude" class="col-sm-4 col-form-label">Latitude Kantor</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="latitude" name="latitude" value="<?= $latitude = (empty($dataapp['latitude'])) ? '' : $dataapp['latitude']; ?>">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="longitude" class="col-sm-4 col-form-label">Longitude Kantor</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="longitude" name="longitude" value="<?= $longitude = (empty($dataapp['longitude'])) ? '' : $dataapp['longitude']; ?>">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group row">
+                            <label for="geocoderInput" class="col-sm-4 col-form-label">Cari Lokasi</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="geocoderInput" placeholder="Masukkan nama tempat...">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary" type="button" id="searchButton">Cari</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="map" style="height: 400px;"></div>
+
+                        <div class="form-group row mt-5">
+                            <div class="col-sm-10">
+                                <button type="submit" class="btn btn-primary" id="settingapp-btn">
+                                    <span class="fas fa-pen mr-1"></span>Edit
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
                             <div class="col-sm-2">Logo Instansi</div>
                             <div class="col-sm-10">
                                 <div class="row">
@@ -99,11 +134,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group row justify-content-end">
-                            <div class="col-sm-10">
-                                <button type="submit" class="btn btn-primary" id="settingapp-btn"><span class="fas fa-pen mr-1"></span>Edit</button>
-                            </div>
-                        </div>
+
                         </form>
                     </div>
                 <?php endif; ?>
@@ -111,3 +142,55 @@
         </div>
     </div>
 </div>
+
+<!-- Pastikan leaflet-geocoder dimasukkan -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var map = L.map('map').setView([-6.200000, 106.816666], 13); // Pusat peta di Jakarta
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        var marker;
+
+        map.on('click', function(e) {
+            var lat = e.latlng.lat;
+            var lng = e.latlng.lng;
+
+            if (marker) {
+                map.removeLayer(marker);
+            }
+
+            marker = L.marker([lat, lng]).addTo(map);
+
+            document.getElementById('latitude').value = lat;
+            document.getElementById('longitude').value = lng;
+        });
+
+        var geocoder = L.Control.Geocoder.nominatim();
+
+        document.getElementById('searchButton').addEventListener('click', function() {
+            var query = document.getElementById('geocoderInput').value;
+            geocoder.geocode(query, function(results) {
+                if (results && results.length > 0) {
+                    var latlng = results[0].center;
+
+                    map.setView(latlng, 13);
+                    if (marker) {
+                        map.removeLayer(marker);
+                    }
+
+                    marker = L.marker(latlng).addTo(map);
+                    document.getElementById('latitude').value = latlng.lat;
+                    document.getElementById('longitude').value = latlng.lng;
+                } else {
+                    alert('Lokasi tidak ditemukan.');
+                }
+            });
+        });
+    });
+</script>

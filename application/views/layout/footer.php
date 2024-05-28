@@ -104,6 +104,7 @@
 
         <?php if ($dataapp['maps_use'] == TRUE) : ?>
             let maps_absen = "searching...";
+
             if (document.getElementById("maps-absen")) {
                 window.onload = function() {
                     var popup = L.popup();
@@ -129,12 +130,12 @@
                         if (geolocationSupported) {
                             alert("Please enable geolocation services in your browser settings and reload the page.");
                             $.ajax({
-                                url: '<?= base_url('ajax/logoutajax') ?>', 
+                                url: '<?= base_url('ajax/logoutajax') ?>',
                                 method: 'POST',
                                 dataType: 'json',
                                 success: function(response) {
                                     // Handle response if necessary
-                                    window.location.href = '<?= base_url('login') ?>'; 
+                                    window.location.href = '<?= base_url('login') ?>';
                                 }
                             });
                         } else {
@@ -149,11 +150,14 @@
                                 var latLng = {
                                     lat: position.coords.latitude,
                                     lng: position.coords.longitude,
+
                                 };
 
                                 var marker = L.marker(latLng).addTo(geolocationMap);
                                 maps_absen = position.coords.latitude + ", " + position.coords.longitude;
                                 geolocationMap.setView(latLng);
+                                console.log("latitude saat ini",  position.coords.latitude);
+                                console.log("longitude saat ini", position.coords.longitude);
                             },
                             function() {
                                 geolocationErrorOccurred(true, popup, geolocationMap.getCenter());
@@ -175,46 +179,89 @@
         $("#btn-absensi").click(function(e) {
 
             e.preventDefault(); // avoid to execute the actual submit of the form.
-
             let ket_absen = $('#ket_absen').val();
+            let userLatitude = '';
+            let userLongitude = '';
 
-            $.ajax({
-                type: "POST",
-                url: '<?= base_url('ajax/absenajax'); ?>',
-                data: {
-                    maps_absen: maps_absen,
-                    ket_absen: ket_absen
-                }, // serializes the form's elements.
-                dataType: 'json',
-                beforeSend: function() {
-                    swal.fire({
-                        imageUrl: "<?= base_url('assets'); ?>/img/ajax-loader.gif",
-                        title: "Proses Absensi",
-                        text: "Please wait",
-                        showConfirmButton: false,
-                        allowOutsideClick: false
-                    });
-                },
-                success: function(response) {
-                    if (response.success == true) {
-                        swal.fire({
-                            icon: 'success',
-                            title: 'Absen Sukses',
-                            text: 'Anda Telah Absen!',
-                            showConfirmButton: false,
-                            timer: 1500
+            // Check if geolocation is supported
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        userLatitude = position.coords.latitude;
+                        userLongitude = position.coords.longitude;
+                  
+
+                        // Assuming these values are fetched from your server/database
+                        let latitude_kantor = <?= $dataapp['latitude']; ?>;
+                        let longitude_kantor = <?= $dataapp['longitude']; ?>;
+                        console.log("latitude", latitude_kantor);
+                        console.log("longitude", longitude_kantor);
+
+                        // Function to calculate distance between two points in km
+                        function calculateDistance(lat1, lon1, lat2, lon2) {
+                            const R = 6371; // Radius of the earth in km
+                            const dLat = (lat2 - lat1) * Math.PI / 180;
+                            const dLon = (lon2 - lon1) * Math.PI / 180;
+                            const a =
+                                0.5 - Math.cos(dLat) / 2 +
+                                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                                (1 - Math.cos(dLon)) / 2;
+                            return R * 2 * Math.asin(Math.sqrt(a));
+                        }
+
+                        if (ket_absen === 'Bekerja Di Kantor') {
+                            let distance = calculateDistance(latitude_kantor, longitude_kantor, userLatitude, userLongitude);
+                            if (distance > 1) {
+                                swal.fire("Absen Gagal", "Anda berada di luar radius 1km dari kantor!", "error");
+                                return;
+                            }
+                        }
+
+                        // Proceed with the AJAX request if within radius
+                        $.ajax({
+                            type: "POST",
+                            url: '<?= base_url('ajax/absenajax'); ?>',
+                            data: {
+                                maps_absen: `${userLatitude}, ${userLongitude}`,
+                                ket_absen: ket_absen
+                            }, // serializes the form's elements.
+                            dataType: 'json',
+                            beforeSend: function() {
+                                swal.fire({
+                                    imageUrl: "<?= base_url('assets'); ?>/img/ajax-loader.gif",
+                                    title: "Proses Absensi",
+                                    text: "Please wait",
+                                    showConfirmButton: false,
+                                    allowOutsideClick: false
+                                });
+                            },
+                            success: function(response) {
+                                if (response.success == true) {
+                                    swal.fire({
+                                        icon: 'success',
+                                        title: 'Absen Sukses',
+                                        text: 'Anda Telah Absen!',
+                                        showConfirmButton: false,
+                                        timer: 1500
+                                    });
+                                    $('#func-absensi').load(location.href + " #func-absensi");
+                                } else {
+                                    $("#infoabsensi").html(response.msgabsen).show().delay(3000).fadeOut();
+                                    swal.close()
+                                }
+                            },
+                            error: function() {
+                                swal.fire("Absen Gagal", "Ada Kesalahan Saat Absen!", "error");
+                            }
                         });
-                        $('#func-absensi').load(location.href + " #func-absensi");
-                    } else {
-                        $("#infoabsensi").html(response.msgabsen).show().delay(3000).fadeOut();
-                        swal.close()
+                    },
+                    function() {
+                        swal.fire("Absen Gagal", "Tidak dapat mengambil lokasi Anda!", "error");
                     }
-                },
-                error: function() {
-                    swal.fire("Absen Gagal", "Ada Kesalahan Saat Absen!", "error");
-                }
-            });
-
+                );
+            } else {
+                swal.fire("Absen Gagal", "Geolokasi tidak didukung oleh browser ini!", "error");
+            }
 
         });
     </script>

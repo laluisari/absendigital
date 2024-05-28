@@ -24,7 +24,7 @@
                             <th>Aksi</th>
                         </tr>
                     </thead>
-                    <tfoot>
+                    <!-- <tfoot>
                         <tr>
                             <th>No</th>
                             <th>Tanggal</th>
@@ -34,7 +34,7 @@
                             <th>Status</th>
                             <th>Aksi</th>
                         </tr>
-                    </tfoot>
+                    </tfoot> -->
                     <tbody>
                     </tbody>
                 </table>

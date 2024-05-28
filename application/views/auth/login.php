@@ -2,7 +2,7 @@
     <div class="row justify-content-center">
         <div class="col-lg-6 align-self-center">
             <div class="text-center my-2">
-                <img src="<?= $logo_source = (empty($dataapp['logo_instansi'])) ? base_url('assets/img/clock-image.png') : (($dataapp['logo_instansi'] == 'default-logo.png') ? base_url('assets/img/clock-image.png') : base_url('storage/setting/' . $dataapp['logo_instansi'])); ?>" class="card-img" style="width:50%;">
+                <!-- <img src="<?= $logo_source = base_url('assets/img/clock-image.png') ; ?>" class="card-img" style="width:50%;"> -->
                 <h3 class="text-white"><?= $appname = (empty($dataapp['nama_app_absensi'])) ? 'Absensi Online' : $dataapp['nama_app_absensi']; ?></h3>
                 <h4 id="date-and-clock mt-3">
                     <h5 class="text-white" id="clocknow"></h5>
@@ -12,9 +12,11 @@
         </div> 
         <div class="col-lg-6">
             <div class="card shadow-lg border-0 rounded-lg p-2">
+
                 <div class="card-header">
                     <h3 class="text-center font-weight-light">Login</h3>
                 </div>
+                
                 <div class="card-body">
                     <?= $this->session->flashdata('authmsg'); ?>
                     <?= form_open('login'); ?>

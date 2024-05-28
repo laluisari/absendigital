@@ -13,6 +13,7 @@ class M_Settings extends CI_Model
     public function init_setting($typeinit)
     {
         if ($typeinit == 1) {
+
             $data = [
                 'status_setting' => 1,
                 'nama_instansi' => '[Ubah Nama Instansi]',
@@ -48,9 +49,9 @@ class M_Settings extends CI_Model
             $this->db->insert('db_setting', $data);
         }
     }
-    public function update_setting()
-    {
-
+    public function update_setting() 
+    { 
+        // Data to be saved
         $sendsave = [
             'nama_instansi' => htmlspecialchars($this->input->post('nama_instansi')),
             'jumbotron_lead_set' =>  htmlspecialchars($this->input->post('pesan_jumbotron')),
@@ -59,40 +60,53 @@ class M_Settings extends CI_Model
             'absen_mulai' =>  htmlspecialchars($this->input->post('absen_mulai')),
             'absen_mulai_to' =>  htmlspecialchars($this->input->post('absen_sampai')),
             'absen_pulang' =>  htmlspecialchars($this->input->post('absen_pulang_sampai')),
-            'maps_use' =>  htmlspecialchars($this->input->post('lokasi_absensi'))
+            'maps_use' =>  htmlspecialchars($this->input->post('lokasi_absensi')),
+            'latitude' =>  htmlspecialchars($this->input->post('latitude')),
+            'longitude' =>  htmlspecialchars($this->input->post('longitude')),
         ];
 
+        // Image upload logic
         $upload_image = $_FILES['logo_instansi']['name'];
 
-        // $upload_image = $_FILES['foto_pegawai']['name'];
-     
         if ($upload_image) {
             $config['allowed_types'] = 'gif|jpg|png|jpeg|bmp';
-            $config['max_size']      = '2048';
+            $config['max_size'] = '2048';
             $config['encrypt_name'] = TRUE;
-            $config['upload_path'] = 'public/uploads/logo_instansi/';
+            $config['upload_path'] = './public/uploads/logo_instansi/';
 
             $this->load->library('upload', $config);
 
             if ($this->upload->do_upload('logo_instansi')) {
                 $gbr = $this->upload->data();
                 $new_image = $gbr['file_name'];
-            
-                $image_path = 'uploads/logo_instansi/' . $new_image;
+                $image_path = 'public/uploads/logo_instansi/' . $new_image;
 
-    
+                // Save the new image path to the database
                 $this->db->set('logo_instansi', $new_image);
             } else {
-                // Handle upload error
-                $this->db->set('logo_instansi', 'uploads/logo_instansi/default.png');
+                // Handle upload error (keep existing image if any)
+                $existing_image = $this->db->get_where('db_setting', ['status_setting' => 1])->row('logo_instansi');
+                if ($existing_image) {
+                    $this->db->set('logo_instansi', $existing_image);
+                } else {
+                    $this->db->set('logo_instansi', 'default.png');
+                }
             }
         } else {
-            $this->db->set('logo_instansi', 'uploads/logo_instansi/default.png');
+            // If no image is uploaded, keep the current image or set to default
+            $existing_image = $this->db->get_where('db_setting', ['status_setting' => 1])->row('logo_instansi');
+            if ($existing_image) {
+                $this->db->set('logo_instansi', $existing_image);
+            } else {
+                $this->db->set('logo_instansi', 'default.png');
+            }
         }
 
-        $this->db->set($sendsave);
+        // Update settings in the database
         $this->db->where('status_setting', 1);
         $this->db->update('db_setting', $sendsave);
+
+        // Update the user table with the new instansi name
         $this->db->update('user', ['instansi' => htmlspecialchars($this->input->post('nama_instansi'))]);
     }
 }
