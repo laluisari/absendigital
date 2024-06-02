@@ -6,7 +6,7 @@
                 <?php if ($this->session->userdata('role_id') == 1) : ?>
                     <div class="btn btn-danger" id="clear-absensi"><span class="fas fa-trash mr-1"></span>Clear All</div>
                 <?php endif; ?>
-                <a class="btn btn-success" href="<?= base_url('export'); ?>"><span class="fas fa-file mr-1"></span>Export Absensi</a>
+                <a class="btn btn-success" href="<?= base_url('exportexcel'); ?>"><span class="fas fa-file mr-1"></span>Export Absensi</a>
                 <div class="btn btn-primary" id="refresh-tabel-absensi"><span class="fas fa-sync-alt mr-1"></span>Refresh Tabel</div>
             </div>
         </div>

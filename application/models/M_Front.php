@@ -41,10 +41,11 @@ class M_Front extends CI_Model
     }
 
     public function do_absen()
-    {
+    { 
         $appsettings = $this->appsetting;
         $today = $this->get_today_date;
         $clocknow = date("H:i:s");
+        $status_pegawai = 0;
         if (strtotime($clocknow) >= strtotime($appsettings['absen_mulai']) && strtotime($clocknow) <= strtotime($appsettings['absen_mulai_to'])) {
             if ($this->db->get_where('db_absensi', ['tgl_absen' => $today, 'kode_pegawai' => $this->get_datasess['kode_pegawai']])->row_array()) {
                 $data = [
@@ -53,6 +54,15 @@ class M_Front extends CI_Model
                 $this->db->where('tgl_absen', $today)->where('kode_pegawai', $this->get_datasess['kode_pegawai']);
                 $this->db->update('db_absensi', $data);
             } else {
+          
+                if ($this->input->post('ket_absen', true) == 'Sakit' || $this->input->post('ket_absen', true) == 'Izin') {
+                    $status_pegawai = 3;
+                }
+                
+                if ($this->input->post('ket_absen', true) == 'Bekerja Di Rumah / WFH' || $this->input->post('ket_absen') == 'Bekerja Di Kantor') {
+                    $status_pegawai = 1;
+                }
+                
                 $data = [
                     'nama_pegawai' => $this->get_datasess['nama_lengkap'],
                     'kode_pegawai' => $this->get_datasess['kode_pegawai'],
@@ -60,7 +70,7 @@ class M_Front extends CI_Model
                     'kode_absen' => 'absen_' . date('Ym') . mt_rand(11111, 99999),
                     'tgl_absen' => $today,
                     'keterangan_absen' => htmlspecialchars($this->input->post('ket_absen', true)),
-                    'status_pegawai' => 1,
+                    'status_pegawai' => $status_pegawai,
                     'maps_absen' => $appsettings['maps_use'] == TRUE ? htmlspecialchars($this->input->post('maps_absen', true)) : 'No Location'
                 ];
                 $this->db->insert('db_absensi', $data);
