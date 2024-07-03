@@ -68,7 +68,7 @@
                         <hr>
                     <?php endif; ?>
                     <div id="location-maps" style="display: none;"></div>
-                    <div id="date-and-clock">
+                    <div id="date-and-clock"> 
                         <h3 id="clocknow"></h3>
                         <h3 id="datenow"></h3>
                     </div>
@@ -80,7 +80,7 @@
                             '<span class="badge badge-primary">Belum Absen</span>' 
                             : (($dbabsensi['status_pegawai'] == 1) 
                             ? '<span class="badge badge-success">Sudah Absen</span>' 
-                            : ($dbabsensi['status_pegawai'] == 3 ?'<span class="badge badge-success">Sudah Izin</span>'
+                            : ($dbabsensi['status_pegawai'] == 3 ?'<span class="badge badge-success">Absen Izin</span>'
                             : '<span class="badge badge-danger">Absen Terlambat</span>'));
                             
                             ?></p>
