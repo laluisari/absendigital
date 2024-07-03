@@ -26,7 +26,7 @@ class Home extends CI_Controller
 			$greet = 'Selamat Siang';
 		} elseif (date("H") < 18) {
 			$greet = 'Selamat Sore';
-		} else {
+		} else { 
 			$greet = 'Selamat Malam';
 		}
 		$data = [

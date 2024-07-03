@@ -75,3 +75,7 @@ $route['cetak'] = 'docs/print';
 $route['export'] = 'docs/export';
 $route['instantabsen'] = 'absen/instant';
 $route['confirmabsen'] = 'absen/confirmabsen';
+
+//newapi
+$route['exportexcel'] = 'exportexcel/export';
+

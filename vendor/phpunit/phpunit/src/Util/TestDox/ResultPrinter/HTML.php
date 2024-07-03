@@ -10,16 +10,9 @@
 
 /**
  * Prints TestDox documentation in HTML format.
- *
- * @since Class available since Release 2.1.0
  */
 class PHPUnit_Util_TestDox_ResultPrinter_HTML extends PHPUnit_Util_TestDox_ResultPrinter
 {
-    /**
-     * @var bool
-     */
-    protected $printsHTML = true;
-
     /**
      * @var string
      */
@@ -34,26 +27,21 @@ class PHPUnit_Util_TestDox_ResultPrinter_HTML extends PHPUnit_Util_TestDox_Resul
                 text-rendering: optimizeLegibility;
                 font-variant-ligatures: common-ligatures;
                 font-kerning: normal;
-                margin-left: 1vw;
-            }
-
-            body > ul {
-                max-width: 60vw;
+                margin-left: 2em;
             }
 
             body > ul > li {
                 font-family: Source Serif Pro, PT Sans, Trebuchet MS, Helvetica, Arial;
-                font-weight: 400;
-                font-size: 1vw;
-                line-height: 1.5vw;
+                font-size: 2em;
             }
 
             h2 {
                 font-family: Tahoma, Helvetica, Arial;
-                font-size: 1.5vw;
+                font-size: 3em;
             }
 
             ul {
+                list-style: none;
                 margin-bottom: 1em;
             }
         </style>
@@ -119,15 +107,14 @@ EOT;
      */
     protected function onTest($name, $success = true)
     {
-        if (!$success) {
-            $strikeOpen  = '<span style="text-decoration:line-through;">';
-            $strikeClose = '</span>';
-        } else {
-            $strikeOpen  = '';
-            $strikeClose = '';
-        }
-
-        $this->write('            <li>' . $strikeOpen . $name . $strikeClose . "</li>\n");
+        $this->write(
+            sprintf(
+                "            <li style=\"color: %s;\">%s %s</li>\n",
+                $success ? '#555753' : '#ef2929',
+                $success ? '✓' : '❌',
+                $name
+            )
+        );
     }
 
     /**

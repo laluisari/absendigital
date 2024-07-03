@@ -156,7 +156,7 @@
                                 var marker = L.marker(latLng).addTo(geolocationMap);
                                 maps_absen = position.coords.latitude + ", " + position.coords.longitude;
                                 geolocationMap.setView(latLng);
-                                console.log("latitude saat ini",  position.coords.latitude);
+                                console.log("latitude saat ini", position.coords.latitude);
                                 console.log("longitude saat ini", position.coords.longitude);
                             },
                             function() {
@@ -189,7 +189,7 @@
                     function(position) {
                         userLatitude = position.coords.latitude;
                         userLongitude = position.coords.longitude;
-                  
+
 
                         // Assuming these values are fetched from your server/database
                         let latitude_kantor = <?= $dataapp['latitude']; ?>;
@@ -197,7 +197,6 @@
                         console.log("latitude", latitude_kantor);
                         console.log("longitude", longitude_kantor);
 
-                        // Function to calculate distance between two points in km
                         function calculateDistance(lat1, lon1, lat2, lon2) {
                             const R = 6371; // Radius of the earth in km
                             const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -243,6 +242,8 @@
                                         text: 'Anda Telah Absen!',
                                         showConfirmButton: false,
                                         timer: 1500
+                                    }).then(function() {
+                                        location.reload(); // Reload halaman setelah pesan swal.fire ditutup
                                     });
                                     $('#func-absensi').load(location.href + " #func-absensi");
                                 } else {
