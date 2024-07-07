@@ -48,7 +48,7 @@ class User extends CI_Controller
         $data = [
             'title' => 'Data Kehadiran',
             'user' => $this->get_datasess,
-            'dataapp' => $this->get_datasetupapp
+            'dataapp' => $this->get_datasetupapp 
         ];
         $this->load->view('layout/header', $data);
         $this->load->view('layout/navbar', $data);
