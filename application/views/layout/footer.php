@@ -511,13 +511,8 @@
         });
     </script>
     <script>
-        $("#refresh-tabel-absensi").click(function(e) {
-            e.preventDefault();
-            load_process();
-            $('#listabsenku').DataTable().ajax.reload();
-        });
-
-        $('#listabsenku').DataTable({
+        // Inisialisasi DataTable
+        var table = $('#listabsenku').DataTable({
             "ajax": {
                 url: "<?= base_url('ajax/get_datatbl?type=allself'); ?>",
                 type: 'get',
@@ -525,11 +520,30 @@
                 "processing": true,
                 "serverSide": true,
                 dataType: 'json',
-                "bDestroy": true
+                "bDestroy": true,
+                data: function(d) {
+                    d.bulan = $('#bulan').val(); // Menambahkan parameter bulan ke request
+                }
             },
             rowCallback: function(row, data, iDisplayIndex) {
-                $('td:eq(0)', row).html();
+                $('td:eq(0)', row).html(iDisplayIndex + 1);
             }
+        });
+
+        // Fungsi untuk memuat ulang tabel
+        function reloadTable() {
+            table.ajax.reload();
+        }
+
+        // Reload table ketika tombol refresh diklik
+        $("#refresh-tabel-absensi").click(function(e) {
+            e.preventDefault();
+            reloadTable();
+        });
+
+        // Reload table ketika dropdown bulan berubah
+        $('#bulan').change(function() {
+            reloadTable();
         });
     </script>
     <?php if ($this->session->userdata('role_id') == 1) : ?>

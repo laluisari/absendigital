@@ -4,7 +4,7 @@
 	position: relative;
 	background-size: cover;
 	background-position: 50% 50%;
-	background-image: url("../img/auth-image.jpg");
+  	background-color: #bddcff; 
 }
 
 .overlay-auth {
