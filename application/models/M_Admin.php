@@ -33,6 +33,16 @@ class M_Admin extends CI_Model
             } else {
                 return 0;
             }
+        } elseif ($typehitung == 'pgwizinSakit') {
+            $this->db->where_in('status_pegawai', [3, 4]);
+            $this->db->where('tgl_absen', $today);
+            $query = $this->db->get('db_absensi');
+
+            if ($query->num_rows() > 0) {
+                return $query->num_rows();
+            } else {
+                return 0;
+            }
         } elseif ($typehitung == 'pgwmsk') {
             $query = $this->db->get_where('db_absensi', ['status_pegawai' => 1, 'tgl_absen' => $today]);
             if ($query->num_rows() > 0) {

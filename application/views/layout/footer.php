@@ -523,6 +523,10 @@
                 "bDestroy": true,
                 data: function(d) {
                     d.bulan = $('#bulan').val(); // Menambahkan parameter bulan ke request
+                },
+                dataSrc: function(json) {
+                    $('#total-nilai').text(json.total_nilai); // Menampilkan total_nilai
+                    return json.data;
                 }
             },
             rowCallback: function(row, data, iDisplayIndex) {

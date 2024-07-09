@@ -507,6 +507,7 @@ class Ajax extends CI_Controller
         $nowday = $hari[(int)date("w")] . ', ' . date("j ") . $bulan[(int)date('m')] . date(" Y");
         $data = [];
         $no = 1;
+        $total_nilai = 0;
         if ($dataabsen == 'datapgw') {
             $check_admin = $this->db->get_where('user', ['role_id' => 1]);
             $query = $this->db->get("user");
@@ -532,18 +533,21 @@ class Ajax extends CI_Controller
                         <button id="detailpegawai" class="btn btn-primary view-pegawai" data-pegawai-id="' . $r->id_pegawai . '" title="Lihat Pegawai"><span class="fas fa-fw fa-address-card"></span></button>
                         <button class="btn btn-warning edit-pegawai" title="Edit Pegawai" data-pegawai-id="' . $r->id_pegawai . '"><span class="fas fa-user-edit"></span></button>
                        
-                    </div>'
+                    </div>',
+                    $total_nilai
                 ];
             }
             $result = array(
                 "draw" => $draw,
                 "recordsTotal" => $query->num_rows(),
                 "recordsFiltered" => $query->num_rows(),
-                "data" => $data
+                "data" => $data,
+                "total_nilai" => 0
             );
         } elseif ($dataabsen == 'all') {
             if ($this->session->userdata('role_id') == 1) {
                 $query = $this->db->get("db_absensi");
+                $total_nilai = 0;
                 foreach ($query->result() as $r) {
                     $data[] = [
                         $no++,
@@ -556,22 +560,34 @@ class Ajax extends CI_Controller
                             ? '<span class="badge badge-primary">Belum Absen</span>'
                             : (
                                 ($r->status_pegawai == 1)
-                                ? '<span class="badge badge-success">Sudah Absen</span>'
+                                ? '<span class="badge badge-success">Absen</span>'
                                 : (
-                                    ($r->status_pegawai == 3)
-                                    ? '<span class="badge badge-warning">Absen Izin</span>'
-                                    : '<span class="badge badge-danger">Absen Terlambat</span>'
+                                    ($r->status_pegawai == 2)
+                                    ? '<span class="badge badge-danger">Terlambat</span>'
+                                    : (
+                                        ($r->status_pegawai == 3)
+                                        ? '<span class="badge badge-warning">Sakit</span>'
+                                        : (
+                                            ($r->status_pegawai == 4)
+                                            ? '<span class="badge badge-info">Izin</span>'
+                                            : '<span class="badge badge-secondary">Status Tidak Diketahui</span>'
+                                        )
+                                    )
                                 )
                             ),
+                            $r->keterangan_absen,
                         '<div class="btn-group btn-small " style="text-align: right;">
                     <button class="btn btn-primary detail-absen" data-absen-id="' . $r->id_absen . '" title="Lihat Absensi"><span class="fas fa-fw fa-address-card"></span></button>
                     <button class="btn btn-danger delete-absen" title="Hapus Absensi" data-absen-id="' . $r->id_absen . '"><span class="fas fa-trash"></span></button>
                     <button class="btn btn-warning print-absen" title="Cetak Absensi" data-absen-id="' . $r->id_absen . '" data-toggle="modal" data-target="#printabsensimodal"><span class="fas fa-print"></span></button>
-                    </div>'
+                    </div>',
+                   
+                        $total_nilai
                     ];
                 }
             } elseif ($this->session->userdata('role_id') == 2) {
                 $query = $this->db->get("db_absensi");
+                $total_nilai = 0;
                 foreach ($query->result() as $r) {
                     $data[] = [
                         $no++,
@@ -583,66 +599,89 @@ class Ajax extends CI_Controller
                         '<div class="btn-group btn-small " style="text-align: right;">
                     <button class="btn btn-primary detail-absen" data-absen-id="' . $r->id_absen . '" title="Lihat Absensi"><span class="fas fa-fw fa-address-card"></span></button>
                     <button class="btn btn-warning print-absen" title="Cetak Absensi" data-absen-id="' . $r->id_absen . '" data-toggle="modal" data-target="#printabsensimodal"><span class="fas fa-print"></span></button>
-                    </div>'
+                    </div>',
+                        $total_nilai
                     ];
                 }
             }
-        }elseif ($dataabsen == 'allself') {
+        } elseif ($dataabsen == 'allself') {
             // Ambil parameter bulan dari URL
             $bulan2 = $this->input->get('bulan');
-        
+
             // Jika bulan kosong, kembalikan data kosong
             if (empty($bulan2)) {
                 $result = array(
                     "draw" => $draw,
                     "recordsTotal" => 0,
                     "recordsFiltered" => 0,
-                    "data" => []
+                    "data" => [],
+                    "total_nilai" => 0
                 );
                 echo json_encode($result);
                 return;
             }
-        
+
             // Inisialisasi query
             $this->db->select('*')
                 ->from('db_absensi')
                 ->where('kode_pegawai', $datapegawai['kode_pegawai']);
-            
+
             // Menambahkan filter bulan dengan LIKE
             $this->db->like("tgl_absen", $bulan2);
-        
+
             $query = $this->db->get();
-            
+
             // Inisialisasi data array
             $data = [];
             $no = 1;
-            
-            // Cek apakah hasil query kosong
+            $total_nilai = 0; // Inisialisasi total nilai
+
             if ($query->num_rows() > 0) {
                 foreach ($query->result() as $r) {
+                    // Hitung total_point berdasarkan status_pegawai
+                    if ($r->status_pegawai == 1) {
+                        $total_point = 1;
+                    } elseif ($r->status_pegawai == 2) {
+                        $total_point = 0.5;
+                    } elseif ($r->status_pegawai == 3 || $r->status_pegawai == 4) {
+                        $total_point = -1;
+                    } else {
+                        $total_point = 0; // Jika status_pegawai tidak dikenal
+                    }
+
+                    // Tambahkan total_point ke total_nilai
+                    $total_nilai += $total_point;
+
+                    // Masukkan data ke array
                     $data[] = [
                         $no++,
                         $r->tgl_absen,
                         $r->nama_pegawai,
                         $r->jam_masuk,
                         $r->jam_pulang,
-                        empty($r->status_pegawai) ? '<span class="badge badge-primary">Belum Absen</span>' : ($r->status_pegawai == 1 ? '<span class="badge badge-success">Sudah Absen</span>' : ($r->status_pegawai == 2 ? '<span class="badge badge-danger">Absen Terlambat</span>' : ($r->status_pegawai == 3 ? '<span class="badge badge-success">Absen Izin</span>' : ''))),
+                        empty($r->status_pegawai) ? '<span class="badge badge-primary">Belum Absen</span>' : (
+                            $r->status_pegawai == 1 ? '<span class="badge badge-success">Sudah Absen</span>' : (
+                                $r->status_pegawai == 2 ? '<span class="badge badge-danger">Absen Terlambat</span>' : (
+                                    $r->status_pegawai == 3 ? '<span class="badge badge-success">Absen Izin</span>' : (
+                                        $r->status_pegawai == 4 ? '<span class="badge badge-warning">Status 4</span>' : ''
+                                    )))),
+                        $total_point, // Tambahkan total_point ke array
                         '<div class="btn-group btn-small" style="text-align: right;">
                             <button class="btn btn-primary detail-absen" data-absen-id="' . $r->id_absen . '" title="Lihat Absensi"><span class="fas fa-fw fa-address-card"></span></button>
                         </div>'
                     ];
                 }
-            }        
-        
-        
+            }
         } elseif ($dataabsen == 'getallmsk') {
             $query = $this->db->get_where("db_absensi", ['tgl_absen' => $nowday, 'status_pegawai' => 1]);
+            $total_nilai = 0;
             foreach ($query->result() as $r) {
                 $data[] = [
                     $no++,
                     $r->jam_masuk,
                     $r->nama_pegawai,
-                    (empty($r->status_pegawai)) ? '<span class="badge badge-primary">Belum Absen</span>' : (($r->status_pegawai == 1) ? '<span class="badge badge-success">Sudah Absen</span>' : '<span class="badge badge-danger">Absen Terlambat</span>')
+                    (empty($r->status_pegawai)) ? '<span class="badge badge-primary">Belum Absen</span>' : (($r->status_pegawai == 1) ? '<span class="badge badge-success">Sudah Absen</span>' : '<span class="badge badge-danger">Absen Terlambat</span>'),
+                    $total_nilai
                 ];
             }
         } elseif ($dataabsen == 'getalltrl') {
@@ -652,7 +691,7 @@ class Ajax extends CI_Controller
                     $no++,
                     $r->jam_masuk,
                     $r->nama_pegawai,
-                    (empty($r->status_pegawai)) ? '<span class="badge badge-primary">Belum Absen</span>' : (($r->status_pegawai == 1) ? '<span class="badge badge-success">Sudah Absen</span>' : '<span class="badge badge-danger">Absen Terlambat</span>')
+                    (empty($r->status_pegawai)) ? '<span class="badge badge-primary">Belum Absen</span>' : (($r->status_pegawai == 1) ? '<span class="badge badge-success">Sudah Absen</span>' : '<span class="badge badge-danger">Absen Terlambat</span>'), $total_nilai
                 ];
             }
         }
@@ -660,7 +699,8 @@ class Ajax extends CI_Controller
             "draw" => $draw,
             "recordsTotal" => $query->num_rows(),
             "recordsFiltered" => $query->num_rows(),
-            "data" => $data
+            "data" => $data,
+            "total_nilai" => $total_nilai
         );
         echo json_encode($result);
     }

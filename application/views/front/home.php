@@ -68,7 +68,7 @@
                         <hr>
                     <?php endif; ?>
                     <div id="location-maps" style="display: none;"></div>
-                    <div id="date-and-clock"> 
+                    <div id="date-and-clock">
                         <h3 id="clocknow"></h3>
                         <h3 id="datenow"></h3>
                     </div>
@@ -76,14 +76,32 @@
                     <?= form_dropdown('ket_absen', ['Bekerja Di Kantor' => 'Bekerja Di Kantor', 'Bekerja Di Rumah / WFH' => 'Bekerja Di Rumah / WFH', 'Sakit' => 'Sakit', 'Izin' => 'Izin'], '', ['class' => 'form-control align-content-center my-2', 'id' => 'ket_absen']); ?>
                     <div class="mt-2">
                         <div id="func-absensi">
-                            <p class="font-weight-bold">Status Kehadiran: <?= $statuspegawai = (empty($dbabsensi['status_pegawai'])) ? 
-                            '<span class="badge badge-primary">Belum Absen</span>' 
-                            : (($dbabsensi['status_pegawai'] == 1) 
-                            ? '<span class="badge badge-success">Sudah Absen</span>' 
-                            : ($dbabsensi['status_pegawai'] == 3 ?'<span class="badge badge-success">Absen Izin</span>'
-                            : '<span class="badge badge-danger">Absen Terlambat</span>'));
-                            
-                            ?></p>
+                            <p class="font-weight-bold">Status Kehadiran:
+                                <?php
+                                $statuspegawai = '';
+
+                                if (empty($dbabsensi['status_pegawai'])) {
+                                    $statuspegawai = '<span class="badge badge-primary">Belum Absen</span>';
+                                } else {
+                                    switch ($dbabsensi['status_pegawai']) {
+                                        case 1:
+                                            $statuspegawai = '<span class="badge badge-success">Sudah Absen</span>';
+                                            break;
+                                        case 3:
+                                            $statuspegawai = '<span class="badge badge-success">Sakit</span>';
+                                            break;
+                                        case 4:
+                                            $statuspegawai = '<span class="badge badge-warning">Absen Izin</span>';
+                                            break;
+                                        default:
+                                            $statuspegawai = '<span class="badge badge-danger">Absen Terlambat</span>';
+                                    }
+                                }
+
+                                echo $statuspegawai;
+                                ?>
+                            </p>
+
                             <div id="jamabsen">
                                 <p>Waktu Datang: <?= $jammasuk = (empty($dbabsensi['jam_masuk'])) ? '00:00:00' : $dbabsensi['jam_masuk']; ?></p>
                                 <p>Waktu Pulang: <?= $jammasuk = (empty($dbabsensi['jam_pulang'])) ? '00:00:00' : $dbabsensi['jam_pulang']; ?></p>
@@ -92,8 +110,8 @@
 
                         <?php
                         $clocknow = date("H:i:s");
-                        $sudahAbsen = false; // Default value if conditions are not met
-
+                        $sudahAbsen = false; 
+                        
                         if (isset($dbabsensi['status_pegawai'], $dataapp['absen_pulang'])) {
                             $sudahAbsen = $dbabsensi['status_pegawai'] == 1 && strtotime($dataapp['absen_pulang']) <= strtotime($clocknow);
                         }
@@ -103,7 +121,7 @@
                             <button class="btn btn-dark" id="btn-absensi">absen pulang</button>
                         <?php endif; ?>
 
-                        <?php if ( empty($dbabsensi['jam_masuk'])) : ?>
+                        <?php if (empty($dbabsensi['jam_masuk'])) : ?>
                             <button class="btn btn-dark" id="btn-absensi">absen</button>
                         <?php endif; ?>
 
