@@ -2,7 +2,7 @@
     <div class="my-4 d-sm-flex align-items-center justify-content-between">
         <h1>Dashboard</h1>
         <div class="btn btn-primary" id="sync-data-dashboard"><span class="fas fa-sync-alt mr-1"></span>Refresh Data</div>
-    </div>
+    </div> 
     <div class="row">
         <div class="col-xl-3 col-md-6">
             <div class="card bg-primary text-white mb-4">
@@ -23,6 +23,19 @@
                 <div class="card-body">
                     <h4><span class="fas fa-user-clock mr-2"></span>Terlambat</h4>
                     <h6 class="mt-3"><?= $pegawaitelat ?><div class="d-inline ml-1">Pegawai
+                        </div>
+                    </h6>
+                </div>
+                <div class="card-footer small">
+                    <div class="text-white">Data Hari Ini</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-warning text-white mb-4">
+                <div class="card-body">
+                    <h4><span class="fas fa-user-clock mr-2"></span>Izin/Sakit</h4>
+                    <h6 class="mt-3"><?= $pegawaiSakitIzin ?><div class="d-inline ml-1">Pegawai
                         </div>
                     </h6>
                 </div>

@@ -3,7 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class M_Front extends CI_Model
 {
- 
+
     public function __construct()
     {
         parent::__construct();
@@ -41,7 +41,7 @@ class M_Front extends CI_Model
     }
 
     public function do_absen()
-    { 
+    {
         $appsettings = $this->appsetting;
         $today = $this->get_today_date;
         $clocknow = date("H:i:s");
@@ -54,11 +54,15 @@ class M_Front extends CI_Model
                 $this->db->where('tgl_absen', $today)->where('kode_pegawai', $this->get_datasess['kode_pegawai']);
                 $this->db->update('db_absensi', $data);
             } else {
-          
-                if ($this->input->post('ket_absen', true) == 'Sakit' || $this->input->post('ket_absen', true) == 'Izin') {
+
+                if ($this->input->post('ket_absen', true) == 'Sakit') {
                     $status_pegawai = 3;
                 }
-                
+
+                if ($this->input->post('ket_absen', true) == 'Izin') {
+                    $status_pegawai = 4;
+                }
+
                 if ($this->input->post('ket_absen', true) == 'Bekerja Di Rumah / WFH' || $this->input->post('ket_absen') == 'Bekerja Di Kantor') {
                     $status_pegawai = 1;
                 }

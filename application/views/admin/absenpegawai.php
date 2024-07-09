@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <h1 class="my-4"><span class="fas fa-user-check mr-2"></span>Absensi Pegawai</h1>
     <div class="card">
-        <div class="card-header">
+        <div class="card-header"> 
             <div class="float-right d-inline">
                 <?php if ($this->session->userdata('role_id') == 1) : ?>
                     <div class="btn btn-danger" id="clear-absensi"><span class="fas fa-trash mr-1"></span>Clear All</div>
@@ -24,6 +24,7 @@
                             <th>Waktu Pulang</th>
                             <th>Kode Pegawai</th>
                             <th>Status</th>
+                            <th>Ket</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>

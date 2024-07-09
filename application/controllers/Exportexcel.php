@@ -70,19 +70,25 @@ class Exportexcel extends CI_Controller
     
         // Populate data
         $row = 2;
-        $currentPegawai = '';
         $totalPoints = 0;
-        $totalPerPegawai = [];
+        $lastPegawai = '';
+        $lastBulan = '';
+        $pointsPerUser = [];
     
         foreach ($dataAbsensi as $index => $absen) {
-            if ($currentPegawai != $absen->nama_pegawai) {
-                if ($currentPegawai != '') {
-                    // Add total points for previous pegawai
-                    $sheet->setCellValue('K' . ($row), $totalPoints);
-                    $row++; // Move to next row for the next pegawai
+            // Memisahkan tanggal untuk mendapatkan bulan
+            $tgl_absen = explode(',', $absen->tgl_absen);
+            $tanggal = explode(' ', trim($tgl_absen[1]));
+            $bulan = $tanggal[1];
+            $namaPegawai = $absen->nama_pegawai;
+    
+            // Jika nama pegawai atau bulan berbeda, tambahkan baris kosong
+            if ($namaPegawai !== $lastPegawai || $bulan !== $lastBulan) {
+                if ($index > 0) {
+                    $row++;
                 }
-                $currentPegawai = $absen->nama_pegawai;
-                $totalPoints = 0; // Reset total points for the new pegawai
+                $lastPegawai = $namaPegawai;
+                $lastBulan = $bulan;
             }
     
             $sheet->setCellValue('A' . $row, $index + 1);
@@ -92,7 +98,7 @@ class Exportexcel extends CI_Controller
             $sheet->setCellValue('E' . $row, $absen->jam_pulang);
             $sheet->setCellValue(
                 'F' . $row,
-                $absen->status_pegawai == 1 ? 'Sudah Absen' : ($absen->status_pegawai == 2 ? 'Absen Terlambat' : ($absen->status_pegawai == 3 ? 'Absen Izin' : 'Belum Absen'))
+                $absen->status_pegawai == 1 ? 'Sudah Absen' : ($absen->status_pegawai == 2 ? 'Absen Terlambat' : ($absen->status_pegawai == 3 ? 'Sakit' : ($absen->status_pegawai == 4 ? 'Izin' : 'Belum Absen')))
             );
             $sheet->setCellValue('G' . $row, $absen->keterangan_absen);
             $sheet->setCellValue('H' . $row, $absen->maps_absen);
@@ -108,14 +114,24 @@ class Exportexcel extends CI_Controller
                 $point = -1;
             }
             $sheet->setCellValue('J' . $row, $point);
+    
+            // Add points to total points per user and per month
+            if (!isset($pointsPerUser[$namaPegawai])) {
+                $pointsPerUser[$namaPegawai] = [];
+            }
+            if (!isset($pointsPerUser[$namaPegawai][$bulan])) {
+                $pointsPerUser[$namaPegawai][$bulan] = 0;
+            }
+            $pointsPerUser[$namaPegawai][$bulan] += $point;
+    
             $totalPoints += $point;
     
-            $row++;
-        }
+            // Jika data terakhir dari user dan bulan, tambahkan total points
+            if ($index + 1 === count($dataAbsensi) || $dataAbsensi[$index + 1]->nama_pegawai !== $namaPegawai || explode(' ', trim(explode(',', $dataAbsensi[$index + 1]->tgl_absen)[1]))[1] !== $bulan) {
+                $sheet->setCellValue('K' . $row, $pointsPerUser[$namaPegawai][$bulan]);
+            }
     
-        // Add total points for the last pegawai
-        if ($currentPegawai != '') {
-            $sheet->setCellValue('K' . ($row), $totalPoints);
+            $row++;
         }
     
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
@@ -126,6 +142,7 @@ class Exportexcel extends CI_Controller
         header('Cache-Control: max-age=0');
         $writer->save('php://output');
     }
+    
     
     
 }

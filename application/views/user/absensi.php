@@ -21,6 +21,9 @@
                 <div class="btn btn-primary" id="refresh-tabel-absensi"><span class="fas fa-sync-alt mr-1"></span>Refresh Tabel</div>
             </div>
         </div>
+        <div class="text-center my-3">
+            <p>Total nilai = <span id="total-nilai"></span></p>
+        </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered dashboard" id="listabsenku" width="100%" cellspacing="0">
@@ -32,6 +35,7 @@
                             <th>Waktu Datang</th>
                             <th>Waktu Pulang</th>
                             <th>Status</th>
+                            <th>Point</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>

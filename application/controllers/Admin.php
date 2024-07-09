@@ -41,6 +41,7 @@ class Admin extends CI_Controller
         $data['jmlpegawai'] = $this->M_Admin->hitungjumlahdata('jmlpgw');
         $data['pegawaitelat'] = $this->M_Admin->hitungjumlahdata('pgwtrl');
         $data['pegawaimasuk'] = $this->M_Admin->hitungjumlahdata('pgwmsk');
+        $data['pegawaiSakitIzin'] = $this->M_Admin->hitungjumlahdata('pgwizinSakit');
         $this->load->view('layout/header', $data);
         $this->load->view('layout/navbar', $data);
         $this->load->view('layout/sidebar', $data);
